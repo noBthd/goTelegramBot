@@ -61,6 +61,7 @@ func main() {
 				case "login":
 					log.Println("USER LOGGED IN: ", login(args))
 				case "status":
+					log.Println("LOGGED?: ", isLogged())
 			}
 		}
 	}
@@ -86,5 +87,11 @@ func reg(args string) (string, string) {
 // login func without db
 func login(args string) (bool) {
 	strings.Split(args, "")
+	return true
+}
+
+//! REMAKE FUNC WITH USING DB
+// func should return username of logged person
+func isLogged() (bool) {
 	return true
 }
