@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 
 	tgbot "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -73,7 +74,9 @@ func main() {
 
 					bot.Send(msg)
 				case "reg":
-					reg(args, db)
+					err := reg(args, db)
+					msg := tgbot.NewMessage(update.Message.Chat.ID, err)
+					bot.Send(msg)
 				case "login":
 					log.Println("USER LOGGED IN: ", login(args))
 				case "status":
@@ -83,9 +86,8 @@ func main() {
 	}
 }
 
-//! REMAKE FUNC WITH USING DB
 // registration func without db
-func reg(args string, db *sql.DB) {
+func reg(args string, db *sql.DB) (string) {
 	// formatting string into two different strings
 	str := strings.Split(args, " ")
 
@@ -93,17 +95,25 @@ func reg(args string, db *sql.DB) {
 	password := str[1]
 	
 	// Adding user into the table
-	rows, err := db.Query("INSERT INTO users (username, password) VALUES ($1, $2)", username, password)
-	if err != nil {
-		log.Fatal(err)
+	if strongPassword(password) {
+		rows, err := db.Query("INSERT INTO users (username, password) VALUES ($1, $2)", username, password)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println(rows)
+		// logs 
+		log.Println("New user registered: \n",
+			"\t{username}: ", username, "\n",
+			"\t{password}: ", password)	
+		
+		log.Println("User registred")
+		return "User registred"
 	}
-	log.Println(rows)
 
-	// logs 
-	log.Println("New user registered: \n",
-		"\t{username}: ", username, "\n",
-		"\t{password}: ", password)	
+	log.Println("password isn't strong enough")
+	return "password isn't strong enough"
 }
+	
 
 //! REMAKE FUNC WITH USING DB
 // login func without db
@@ -120,7 +130,9 @@ func isLogged() (bool) {
 }
 
 func strongPassword(password string) (bool){
-	if len(password) > 8 {
+	re := regexp.MustCompile("[0-9]+")
+
+	if len(password) > 8 && re.FindAllString(password, -1) != nil {
 		return true
 	}
 
