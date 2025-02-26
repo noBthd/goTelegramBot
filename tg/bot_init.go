@@ -36,10 +36,11 @@ func BotInitTg() {
 	
 	// adding commands
 	commands := []tgbotapi.BotCommand {
-		{Command: "start", 	Description: "starting the bot"},
-		{Command: "reg", 	Description: "Usage: /reg <username> <password>"},
-		{Command: "login", 	Description: "Usage: /login <username> <password>"},
-		{Command: "status", Description: "Showing login status"},
+		{Command: "start", 		Description: "starting the bot"},
+		{Command: "reg", 		Description: "Usage: /reg <username> <password>"},
+		{Command: "login", 		Description: "Usage: /login <username> <password>"},
+		{Command: "status", 	Description: "Showing login status"},
+		{Command: "download", 	Description: "Download by link"},
 	}
 	
 	cmdConf := tgbotapi.NewSetMyCommands(commands...)
